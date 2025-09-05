@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-4">Books</h1>
+<div class="flex justify-between items-center mb-6">
+    <form method="GET" class="w-full max-w-lg">
+        <input type="text" name="q" placeholder="Search by title or author..." class="p-2 border border-gray-300 rounded-md w-full">
+        <button type="submit" class="hidden">Search</button>
+    </form>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for book in books %}
+    <a href="{% url 'book-detail' book.pk %}" class="block bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+        <div class="flex items-center">
+            {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }} Cover" class="w-24 h-32 object-cover rounded-l-lg">
+            {% endif %}
+            <div class="p-4">
+                <h2 class="text-xl font-semibold text-gray-800">{{ book.title }}</h2>
+                <p class="text-sm text-gray-600">by {{ book.author }}</p>
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <p>No books found.</p>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<div class="flex justify-center mt-6">
+    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+            Previous
+        </a>
+        {% endif %}
+        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+            Next
+        </a>
+        {% endif %}
+    </nav>
+</div>
+{% endif %}
+{% endblock %}

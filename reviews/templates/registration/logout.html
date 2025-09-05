@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Logged Out{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md text-center">
+    <h1 class="text-2xl font-bold mb-4">You have been logged out.</h1>
+    <p class="text-gray-600 mb-6">Thank you for visiting.</p>
+    <a href="{% url 'book-list' %}" class="inline-block bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
+        Return to Home
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+    <h1 class="text-3xl font-bold mb-2">{{ book.title }}</h1>
+    <p class="text-lg text-gray-600 mb-2">by {{ book.author }}</p>
+    <div class="flex items-center mb-4">
+        {% if book.cover_image %}
+        <img src="{{ book.cover_image.url }}" alt="{{ book.title }} Cover" class="w-32 h-48 object-cover rounded-md mr-4">
+        {% endif %}
+        <p class="text-gray-700">{{ book.description }}</p>
+    </div>
+</div>
+
+<h2 class="text-2xl font-semibold mb-4">Reviews</h2>
+{% if user.is_authenticated %}
+<a href="{% url 'review-create' book.pk %}" class="inline-block bg-blue-600 text-white py-2 px-4 rounded-md mb-4 hover:bg-blue-700">
+    Add a Review
+</a>
+{% endif %}
+
+<div class="space-y-4">
+    {% for review in book.reviews.all %}
+    <div class="bg-white p-4 rounded-lg shadow-sm">
+        <div class="flex justify-between items-center mb-2">
+            <div>
+                <span class="font-bold text-gray-800">{{ review.user.username }}</span>
+                <span class="text-sm text-gray-500 ml-2">({{ review.rating }} / 5)</span>
+            </div>
+            {% if user == review.user or user.is_staff %}
+            <div class="text-sm">
+                {% if user == review.user %}
+                <a href="{% url 'review-update' review.pk %}" class="text-blue-600 hover:underline">Edit</a> |
+                {% endif %}
+                <a href="{% url 'review-delete' review.pk %}" class="text-red-600 hover:underline">Delete</a>
+            </div>
+            {% endif %}
+        </div>
+        <p class="text-gray-700">{{ review.comment }}</p>
+        <p class="text-xs text-gray-400 mt-2">Posted on {{ review.created_at|date:"F j, Y" }}</p>
+    </div>
+    {% empty %}
+    <p>No reviews yet. Be the first to leave one!</p>
+    {% endfor %}
+</div>
+{% endblock %}
